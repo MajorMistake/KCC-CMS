@@ -2,15 +2,60 @@
 from rxconfig import config
 
 import reflex as rx
+from datetime import datetime
 
 docs_url = "https://reflex.dev/docs/getting-started/introduction"
 filename = f"{config.app_name}/{config.app_name}.py"
 
 
+#Database
+class Inventory(rx.Model, table=True):
+    product_id = int
+    order_id: int
+    current: bool
+    count: int
+    order_size: int
+    order_cost: float
+    order_date: datetime
+
+class Expenses(rx.Model, table=True):
+    transaction_id = int
+    vendor = str
+    description = str
+    date = datetime
+    category = str
+    amount = float
+
+class Revenue(rx.Model, table=True):
+    sale_id = int
+    product_id = int
+    sale_time = datetime
+    quantity = int
+    tob_event = str
+    revenue = float
+    payment_type = str
+
+class Pricing(rx.Model, table=True):
+    product_id = int
+    design_id = int
+    design_name = str
+    item_type = str
+    price = float
+
+class Sales_Rules(rx.Model, table=True):
+    rule_id = int
+    rule_content = str
+    total_price = float
+
+
+#State Vars
+
 class State(rx.State):
     """The app state."""
 
     pass
+
+#Routes
 
 @rx.route(route="/", title="index")
 def index() -> rx.Component:
