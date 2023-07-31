@@ -4,120 +4,14 @@ from rxconfig import config
 import reflex as rx
 from datetime import datetime
 from time import strftime, strptime, gmtime #Time Conversions for DB
-from typing import List
-from sqlmodel import Field
+from typing import Any, List, Optional
+
+from .components.components import nav_bar, auth_layout
+from .state.base import State
+from .state.auth import AuthState
 
 docs_url = "https://reflex.dev/docs/getting-started/introduction"
 filename = f"{config.app_name}/{config.app_name}.py"
-
-
-#Database
-class Users(rx.Model, table=True):
-    user_id: int = Field(primary_key=True)
-    username: str = Field()
-    password: str = Field()
-    tenant: str = Field()
-
-class Inventory(rx.Model, table=True):
-    product_id: int = Field(primary_key=True)
-    tenant: str = Field()
-    order_id: int = Field()
-    current: bool = Field()
-    count: int = Field()
-    order_size: int = Field()
-    order_cost: float = Field()
-    order_date: str = Field() #date-field
-
-class Expenses(rx.Model, table=True):
-    transaction_id: int = Field(primary_key=True)
-    tenant: str = Field()
-    vendor: str = Field()
-    description: str = Field()
-    date: str = Field() #date-field
-    category: str = Field()
-    amount: float = Field()
-
-class Revenue(rx.Model, table=True):
-    sale_id: int = Field(primary_key=True)
-    product_id: int = Field(primary_key=True)
-    tenant: str = Field()
-    sale_time: str = Field() #date-field
-    quantity: int = Field()
-    tob_event: str = Field()
-    revenue: float = Field()
-    payment_type: str = Field()
-
-class Pricing(rx.Model, table=True):
-    product_id: int = Field(primary_key=True)
-    design_id: int = Field()
-    tenant: str = Field()
-    design_name: str = Field()
-    item_type: str = Field()
-    price: float = Field()
-
-class Sales_Rules(rx.Model, table=True):
-    rule_id: int = Field(primary_key=True)
-    tenant: str = Field()
-    rule_content: str = Field()
-    total_price: float = Field()
-
-#DB Methods
-
-class Inventory_Operations(rx.State):
-    product_id: int
-    order_id: int
-    current: bool
-    count: int
-    order_size: int
-    order_cost: float
-    order_date: str #date-field
-
-    #Query Fields
-    result: List[Inventory]
-
-    def add_inventory(self):
-        with rx.session() as session:
-            session.add(
-                Inventory(
-                product_id=self.product_id, order_id=self.order_id,
-                current=self.current, count=self.count, order_size=self.order_size,
-                order_cost=self.order_cost, order_date=self.order_date
-                )
-            )
-        session.commit()
-
-    def view_inventory(self):
-        with rx.session as session:
-            self.result = (
-                session.query(Inventory)
-                .all()
-            )
-
-
-
-
-#State Vars
-
-class State(rx.State):
-    pass
-
-#Componets
-def nav_bar():
-    return rx.hstack(
-            rx.link("Index", href="/"),
-            rx.link("Login", href="/login"),
-            rx.link("Tenant", href="/[tenant]"),
-            rx.link("Tenant Overview", href="/[tenant]/overview"),
-            rx.link("Tenant Home", href="[tenant]/home"),
-            rx.link("Inventory", href="[tenant]/inventory"),
-            rx.link("Designs", href="/[tenant]/designs"),
-            rx.link("Individual Designs", href="/[tenant]/designs/[design-name]"),
-            rx.link("Prices", href="/[tenant]/prices"),
-            rx.link("Sales", href="/[tenant]/sales"),
-            rx.link("Expenses", href="/[tenant]/expenses"),
-            rx.link("POS", href="/[tenant]/POS"),
-            rx.link("Sales Rules", href="/[tenant]/sales-rules")
-        )
 
 
 #Routes
@@ -151,10 +45,75 @@ def index() -> rx.Component:
     )
 
 @rx.route(route="/login", title="Login")
-def login() -> rx.Component:
-    return rx.fragment(
+def login():
+    return auth_layout(
         nav_bar(),
-        rx.text("Login Page")
+        rx.box(
+            rx.input(placeholder="Username", on_blur=AuthState.set_username, mb=4),
+            rx.input(
+                type_="password",
+                placeholder="Password",
+                on_blur=AuthState.set_password,
+                mb=4,
+            ),
+            rx.button(
+                "Log in",
+                on_click=AuthState.login,
+                bg="blue.500",
+                color="white",
+                _hover={"bg": "blue.600"},
+            ),
+            align_items="left",
+            bg="white",
+            border="1px solid #eaeaea",
+            p=4,
+            max_width="400px",
+            border_radius="lg",
+        ),
+        rx.text(
+            "Don't have an account yet? ",
+            rx.link("Sign up here.", href="/signup", color="blue.500"),
+            color="gray.600",
+        ),
+    )
+
+@rx.route(route="/signup", title="Sign Up")
+def signup():
+    return auth_layout(
+        rx.box(
+            rx.input(placeholder="Tenant", on_blur=AuthState.set_tenant, mb=4),
+            rx.input(placeholder="Username", on_blur=AuthState.set_username, mb=4),
+            rx.input(
+                type_="password",
+                placeholder="Password",
+                on_blur=AuthState.set_password,
+                mb=4,
+            ),
+            rx.input(
+                type_="password",
+                placeholder="Confirm password",
+                on_blur=AuthState.set_confirm_password,
+                mb=4,
+            ),
+            rx.button(
+                "Sign up",
+                on_click=AuthState.signup,
+                bg="blue.500",
+                color="white",
+                _hover={"bg": "blue.600"},
+            ),
+            align_items="left",
+            bg="white",
+            border="1px solid #eaeaea",
+            p=4,
+            max_width="400px",
+            border_radius="lg",
+        ),
+        rx.text(
+            "Already have an account? ",
+            rx.link("Sign in here.", href="/", color="blue.500"),
+            color="gray.600",
+        ),
     )
 
 @rx.route(route="/[tenant]", title="Tenant")
