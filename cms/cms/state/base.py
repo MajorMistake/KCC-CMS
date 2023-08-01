@@ -22,6 +22,12 @@ class State(rx.State):
         """Check if a user is logged in."""
         return self.user is not None
     
+    @rx.var
+    def show(self):
+        if self.user is not None:
+            return self.user.tenant
+        else:
+            return "Empty User Value"
 
     
 #DB Methods

@@ -62,6 +62,7 @@ def nav_bar():
     return rx.hstack(
             rx.link("Index", href="/"),
             rx.link("Login", href="/login"),
+            rx.link("Test", href="/test"),
             rx.link("Tenant", href="/tenant"),
             rx.link("Tenant Overview", href="/[tenant]/overview"),
             rx.link("Tenant Home", href="[tenant]/home"),

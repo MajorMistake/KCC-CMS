@@ -8,7 +8,8 @@ class AuthState(State):
     username: str
     password: str
     confirm_password: str
-    tenant: str
+    tenant_ref: str
+    test: str
 
     def signup(self):
         """Sign up a user."""
@@ -17,7 +18,7 @@ class AuthState(State):
                 return rx.window_alert("Passwords do not match.")
             if session.exec(User.select.where(User.username == self.username)).first():
                 return rx.window_alert("Username already exists.")
-            self.user = User(username=self.username, password=self.password, tenant=self.tenant)
+            self.user = User(username=self.username, password=self.password, tenant=self.tenant_ref)
             session.add(self.user)
             session.expire_on_commit = False
             session.commit()

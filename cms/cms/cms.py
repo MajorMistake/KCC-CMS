@@ -19,28 +19,11 @@ filename = f"{config.app_name}/{config.app_name}.py"
 @rx.route(route="/", title="index")
 def index() -> rx.Component:
     return rx.fragment(
-        rx.color_mode_button(rx.color_mode_icon(), float="right"),
         nav_bar(),
         rx.vstack(
             rx.heading("Welcome to Reflex!", font_size="2em"),
             rx.text("Hello, World!"),
             rx.box("Get started by editing ", rx.code(filename, font_size="1em")),
-            rx.link(
-                "Check out our docs!",
-                href=docs_url,
-                border="0.1em solid",
-                padding="0.5em",
-                border_radius="0.5em",
-                _hover={
-                    "color": rx.color_mode_cond(
-                        light="rgb(107,99,246)",
-                        dark="rgb(179, 175, 255)",
-                    )
-                },
-            ),
-            spacing="1.5em",
-            font_size="2em",
-            padding_top="10%",
         ),
     )
 
@@ -81,7 +64,6 @@ def login():
 def signup():
     return auth_layout(
         rx.box(
-            rx.input(placeholder="Tenant", on_blur=AuthState.set_tenant, mb=4),
             rx.input(placeholder="Username", on_blur=AuthState.set_username, mb=4),
             rx.input(
                 type_="password",
@@ -95,6 +77,8 @@ def signup():
                 on_blur=AuthState.set_confirm_password,
                 mb=4,
             ),
+            rx.input(placeholder="Tenant", on_blur=AuthState.set_tenant_ref, mb=4),
+            rx.input(placeholder="Test", on_blur=AuthState.set_test, mb=4),
             rx.button(
                 "Sign up",
                 on_click=AuthState.signup,
@@ -114,6 +98,13 @@ def signup():
             rx.link("Sign in here.", href="/", color="blue.500"),
             color="gray.600",
         ),
+    )
+
+@rx.route(route="test", title="Test")
+def test() -> rx.Component:
+    return rx.fragment(
+        nav_bar(),
+        rx.text(State.show)
     )
 
 @rx.route(route="/[tenant]", title="Tenant")

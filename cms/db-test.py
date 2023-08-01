@@ -9,6 +9,8 @@ c = conn.cursor()
 
 # Insert a row
 result = c.execute("SELECT * FROM User")
+#result = c.execute("DELETE FROM User")
+#result2 = c.execute("VACUUM")
 #result = c.execute('''
 #UPDATE User
 #SET tenant = 'KCC'
