@@ -9,7 +9,6 @@ class AuthState(State):
     password: str
     confirm_password: str
     tenant_ref: str
-    test: str
 
     def signup(self):
         """Sign up a user."""
@@ -19,6 +18,8 @@ class AuthState(State):
             if session.exec(User.select.where(User.username == self.username)).first():
                 return rx.window_alert("Username already exists.")
             self.user = User(username=self.username, password=self.password, tenant=self.tenant_ref)
+            self.base_username = self.user.username
+            self.base_tenant_ref = self.user.tenant
             session.add(self.user)
             session.expire_on_commit = False
             session.commit()
@@ -32,6 +33,8 @@ class AuthState(State):
             ).first()
             if user and user.password == self.password:
                 self.user = user
+                self.base_username = self.user.username
+                self.base_tenant_ref = self.user.tenant
                 return rx.redirect("/")
             else:
                 return rx.window_alert("Invalid username or password.")

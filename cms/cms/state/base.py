@@ -1,11 +1,15 @@
 import reflex as rx
 from .models import User
-from typing import Optional
+from typing import Optional, Dict
 
 #State Vars
 
 class State(rx.State):
     user: Optional[User] = None
+
+    base_tenant_ref: str = ""
+    url: Optional[str] = "/"
+
 
     def logout(self):
         """Log out a user."""
@@ -23,11 +27,9 @@ class State(rx.State):
         return self.user is not None
     
     @rx.var
-    def show(self):
-        if self.user is not None:
-            return self.user.tenant
-        else:
-            return "Empty User Value"
+    def url_constructor(self, *args):
+        self.url = self.tenant_url = "/".join(args)
+
 
     
 #DB Methods

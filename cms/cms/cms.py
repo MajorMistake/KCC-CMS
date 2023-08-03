@@ -10,9 +10,6 @@ from .components.components import nav_bar, auth_layout
 from .state.base import State
 from .state.auth import AuthState
 
-docs_url = "https://reflex.dev/docs/getting-started/introduction"
-filename = f"{config.app_name}/{config.app_name}.py"
-
 
 #Routes
 
@@ -23,7 +20,6 @@ def index() -> rx.Component:
         rx.vstack(
             rx.heading("Welcome to Reflex!", font_size="2em"),
             rx.text("Hello, World!"),
-            rx.box("Get started by editing ", rx.code(filename, font_size="1em")),
         ),
     )
 
@@ -78,7 +74,6 @@ def signup():
                 mb=4,
             ),
             rx.input(placeholder="Tenant", on_blur=AuthState.set_tenant_ref, mb=4),
-            rx.input(placeholder="Test", on_blur=AuthState.set_test, mb=4),
             rx.button(
                 "Sign up",
                 on_click=AuthState.signup,
@@ -104,80 +99,65 @@ def signup():
 def test() -> rx.Component:
     return rx.fragment(
         nav_bar(),
-        rx.text(State.show)
     )
 
-@rx.route(route="/[tenant]", title="Tenant")
-def tenant() -> rx.Component:
-    return rx.fragment(
-        nav_bar(),
-        rx.text("Tenant Page")
-    )
-
-@rx.route(route="/[tenant]/overview", title="Overview")
+@rx.route(route="/overview", title="Overview")
 def overview() -> rx.Component:
     return rx.fragment(
         nav_bar(),
         rx.text("Overview Page")
     )
 
-@rx.route(route="/[tenant]/home", title="Home")
-def home() -> rx.Component:
-    return rx.fragment(
-        nav_bar(),
-        rx.text("Home Page")
-    )
-
-@rx.route(route="/[tenant]/inventory", title="Inventory")
+@rx.route(route="/inventory", title="Inventory")
 def inventory() -> rx.Component:
     return rx.fragment(
         nav_bar(),
         rx.text("Inventory Page")
     )
 
-@rx.route(route="/[tenant]/designs", title="Designs")
+@rx.route(route="/designs", title="Designs")
 def designs() -> rx.Component:
     return rx.fragment(
         nav_bar(),
         rx.text("Designs Page")
     )
 
-@rx.route(route="/[tenant]/designs/[design-name]", title="Individual Designs")
+@rx.route(route="/designs/design-detail", title="Individual Designs")
 def design_detail() -> rx.Component:
     return rx.fragment(
         nav_bar(),
         rx.text("Individual Designs")
     )
 
-@rx.route(route="/[tenant]/prices", title="Prices")
+@rx.route(route="/prices", title="Prices")
 def prices() -> rx.Component:
     return rx.fragment(
         nav_bar(),
         rx.text("Prices Page")
     )
 
-@rx.route(route="/[tenant]/sales", title="Sales")
+@rx.route(route="/sales", title="Sales")
 def sales() -> rx.Component:
     return rx.fragment(
         nav_bar(),
         rx.text("Sales Page")
     )
 
-@rx.route(route="/[tenant]/expenses", title="Expenses")
+@rx.route(route="/expenses", title="Expenses")
 def expenses() -> rx.Component:
     return rx.fragment(
         nav_bar(),
         rx.text("Expenses Page")
     )
 
-@rx.route(route="/[tenant]/POS", title="POS")
+@rx.route(route="/pos", title="POS")
 def POS() -> rx.Component:
     return rx.fragment(
         nav_bar(),
         rx.text("POS Page")
     )
 
-@rx.route(route="/[tenant]/sales-rules", title="Sales Rules")
+@rx.route(route="/sales-rules", title="Sales Rules")
 def sales_rules() -> rx.Component:
     return rx.fragment(
         nav_bar(),

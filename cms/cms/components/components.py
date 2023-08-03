@@ -1,4 +1,5 @@
 import reflex as rx
+from ..state.base import State
 
 #Components
 
@@ -63,15 +64,13 @@ def nav_bar():
             rx.link("Index", href="/"),
             rx.link("Login", href="/login"),
             rx.link("Test", href="/test"),
-            rx.link("Tenant", href="/tenant"),
-            rx.link("Tenant Overview", href="/[tenant]/overview"),
-            rx.link("Tenant Home", href="[tenant]/home"),
-            rx.link("Inventory", href="[tenant]/inventory"),
-            rx.link("Designs", href="/[tenant]/designs"),
-            rx.link("Individual Designs", href="/[tenant]/designs/[design-name]"),
-            rx.link("Prices", href="/[tenant]/prices"),
-            rx.link("Sales", href="/[tenant]/sales"),
-            rx.link("Expenses", href="/[tenant]/expenses"),
-            rx.link("POS", href="/[tenant]/POS"),
-            rx.link("Sales Rules", href="/[tenant]/sales-rules")
+            rx.link("Tenant Overview", href="/overview", on_load=State.logged_in),
+            rx.link("Inventory", href="/inventory", on_load=State.logged_in),
+            rx.link("Designs", href="/designs", on_load=State.logged_in),
+            rx.link("Individual Designs", href="/designs/design-detail", on_load=State.logged_in),
+            rx.link("Prices", href="/prices", on_load=State.logged_in),
+            rx.link("Sales", href="/sales", on_load=State.logged_in),
+            rx.link("Expenses", href="/expenses", on_load=State.logged_in),
+            rx.link("POS", href="/pos", on_load=State.logged_in),
+            rx.link("Sales Rules", href="/sales-rules", on_load=State.logged_in)
         )
